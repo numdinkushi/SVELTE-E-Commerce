@@ -22,16 +22,16 @@
   </div>
   <div class="">
     {@render dashboardCard({
-      title: "Total Sales",
-      subtitle: "This Month",
-      body: "$324324",
+      title: "Customers",
+      subtitle: `${formatCurrency(userData.averageValuePerUser)} Average Values`,
+      body: formatNumber(userData?.userCount),
     })}
   </div>
   <div class="">
     {@render dashboardCard({
-      title: "Total Sales",
-      subtitle: "This Month",
-      body: "$324324",
+      title: "Active Products",
+      subtitle: `${formatNumber(productData.inactiveCount)} Inactive`,
+      body: formatNumber(productData.activeCount),
     })}
   </div>
 </div>
