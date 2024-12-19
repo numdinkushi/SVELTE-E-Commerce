@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id                     String                 @id @default(uuid())
+  name                   String                 @unique
+  description            String?
+  priceInCents           Int
+  filePath               String
+  imagePath              String
+  descriptions           String
+  isAvailableForPurchase Boolean                @default(true)
+  orders                 Order[]
+  createdAt              DateTime               @default(now())
+  updatedAt              DateTime               @updatedAt
+  downloadVerification   DownloadVerification[]
+  User                   User?                  @relation(fields: [userId], references: [id])
+  userId                 String?
+}
+
+model User {
+  id             String    @id @default(uuid())
+  email          String    @unique
+  username       String    @unique
+  hashedPassword String?   @unique
+  products       Product[]
+  orders         Order[]
+  session        Session[]
+  isAdmin        Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Session {
+  id     String @id
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Order {
+  id           String   @id @default(uuid())
+  userId       String
+  priceInCents Int
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model DownloadVerification {
+  id        String   @id @default(uuid())
+  expiredAt DateTime
+  createdAt DateTime @default(now())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+}
